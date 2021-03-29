@@ -32,6 +32,7 @@ class MyComponent extends Component {
     })
   }
 render(){
+  const { book } = this.state //this.state.book
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app! Hello world</Text>
@@ -46,10 +47,9 @@ render(){
                 onPress={ () => this.update()}>
                   Force Update
                 </Text>
-                <Text onPress={() => this.updateBook()}>
-                { this.state.book }</Text>
-                <BookDisplay updateBook={() => this.updateBook() } 
-                book={this.state.book}/>
+                <BookDisplay 
+                  updateBook={ () => this.updateBook() } 
+                book={ book } />
       <StatusBar style="auto" />
     </View>
   );
@@ -58,10 +58,12 @@ render(){
 
 class BookDisplay extends Component {
   render() {
+    const { book, updateBook } = this.props
     return(
       <View>
-        <Text onPress={ () => this.props.updateBook()}>
-        { this.props.book }</Text>
+        <Text 
+          onPress={ updateBook }>
+        { book }</Text>
       </View>
     )
   }
