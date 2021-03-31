@@ -5,16 +5,16 @@ import { StyleSheet, Text, View } from 'react-native';
 class MyComponent extends Component {
   constructor(props) {
 
-      super(props);
-      this.state = {
+      super(props); //위에서 받아온 props가 state에 필요한 경우만
+      this.state = {//state 생성
           year: 2020,
           name: 'lee',
           colors: ['blue'],
           book:'props'
       }
-      this.updateYear = this.updateYear.bind(this);
-      // this.update = this.update.bind(this);
-      this.updateBook = this.updateBook.bind(this);
+      // this.updateYear = this.updateYear.bind(this);   //updateYear가 에러가 난다면 추가
+      // // this.update = this.update.bind(this);
+      // this.updateBook = this.updateBook.bind(this);
   }
   updateYear(){
       this.setState({ //setState가 끝에 render를 호출하여 화면이 바뀌게 된다.
@@ -31,6 +31,7 @@ class MyComponent extends Component {
       book:'changed props'
     })
   }
+  
 render(){
   const { book } = this.state //this.state.book
   return (
@@ -55,6 +56,7 @@ render(){
   );
 }
 }
+
 
 class BookDisplay extends Component {
   render() {
