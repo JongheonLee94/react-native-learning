@@ -36,40 +36,48 @@ render(){
   const { book } = this.state //this.state.book
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app! Hello world</Text>
-      
-                <Text>My name is {this.state.name}</Text>
-                <Text 
-                  onPress={() => this.updateYear() } >
-                    The year is {this.state.year}
-                </Text>
-                <Text>My colors are {this.state.colors[0]}</Text>
-                <Text 
-                onPress={ () => this.update()}>
-                  Force Update
-                </Text>
-                <BookDisplay 
-                  updateBook={ () => this.updateBook() } 
-                book={ book } />
+      <Heading/>
+      <Input/>
+      <TodoList/>
+      <Button/>
+      <TabBar/>
       <StatusBar style="auto" />
     </View>
   );
 }
 }
 
-
-class BookDisplay extends Component {
-  render() {
-    const { book, updateBook } = this.props
-    return(
-      <View>
-        <Text 
-          onPress={ updateBook }>
-        { book }</Text>
-      </View>
-    )
-  }
+const Heading = () => {
+  return(<View>
+    <Text>Header</Text>
+  </View>
+  );
 }
+const Input = () => {
+  return(<View>
+    <Text>Input</Text>
+  </View>
+  );
+}
+const TodoList = () => {
+  return(<View>
+    <Text>TodoList</Text>
+  </View>
+  );
+}
+const Button = () => {
+  return(<View>
+    <Text>Button</Text>
+  </View>
+  );
+}
+const TabBar = () => {
+  return(<View>
+    <Text>TabBar</Text>
+  </View>
+  );
+}
+
 
 const styles = StyleSheet.create({
   container: {
