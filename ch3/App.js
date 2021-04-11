@@ -1,92 +1,124 @@
-import { StatusBar } from 'expo-status-bar';
-import React ,{Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
 
-class MyComponent extends Component {
-  constructor(props) {
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 
-      super(props); //위에서 받아온 props가 state에 필요한 경우만
-      this.state = {//state 생성
-          year: 2020,
-          name: 'lee',
-          colors: ['blue'],
-          book:'props'
+import {
+  Colors,
+  DebugInstructions,
+  Header,
+  LearnMoreLinks,
+  ReloadInstructions,
+} from 'react-native/Libraries/NewAppScreen';
+import Heading from './Heading'
+import Input from './Input'
+import Button from './Button' 
+import TodoList from './TodoList'
+import TabBar from './TabBar'
+let todoIndex = 0
+
+class App extends Component {
+
+  constructor() {
+  super()
+  this.state = {
+    inputValue: '',
+    todos: [],
+    type: 'All'
       }
-      // this.updateYear = this.updateYear.bind(this);   //updateYear가 에러가 난다면 추가
-      // // this.update = this.update.bind(this);
-      // this.updateBook = this.updateBook.bind(this);
-  }
-  updateYear(){
-      this.setState({ //setState가 끝에 render를 호출하여 화면이 바뀌게 된다.
-          year: 2021
-      })
-      
-  }
-  update() {
-    this.state.year=2019 //직접 바꾸게 되면 render가 호출되지 않아 화면이 바뀌지 않는다.
-    this.forceUpdate()   //추천되지는 않지만 화면을 강제로 업데이트해서 변경사항을 적용한다. 
-  }
-  updateBook(){
-    this.setState({
-      book:'changed props'
-    })
+      this.submitTodo = this.submitTodo.bind(this) 
+      this.toggleComplete = this.toggleComplete.bind(this)  
+      this.deleteTodo = this.deleteTodo.bind(this) 
+      this.setType = this.setType.bind(this)
+
   }
   
-render(){
-  const { book } = this.state //this.state.book
-  return (
-    <View style={styles.container}>
-      <Heading/>
-      <Input/>
-      <TodoList/>
-      <Button/>
-      <TabBar/>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-}
+  inputChange(inputValue) { 
+      console.log(' Input Value: ' , inputValue) 
+      this.setState({ inputValue }) 
+  }
 
-const Heading = () => {
-  return(<View>
-    <Text>Header</Text>
-  </View>
-  );
-}
-const Input = () => {
-  return(<View>
-    <Text>Input</Text>
-  </View>
-  );
-}
-const TodoList = () => {
-  return(<View>
-    <Text>TodoList</Text>
-  </View>
-  );
-}
-const Button = () => {
-  return(<View>
-    <Text>Button</Text>
-  </View>
-  );
-}
-const TabBar = () => {
-  return(<View>
-    <Text>TabBar</Text>
-  </View>
-  );
+  submitTodo () {   
+      if (this.state.inputValue.match(/^\s*$/)) {
+        return
+      }
+      const todo = {
+        title: this.state.inputValue,
+        todoIndex,
+        complete: false
+      }
+      todoIndex++ 
+      const todos = [...this.state.todos, todo] 
+      this.setState({ todos, inputValue: '' }, () => { 
+          console.log('State: ', this.state) 
+      })
+  }
+
+  deleteTodo (todoIndex) { 
+      let { todos } = this.state
+      todos = todos.filter((todo) => todo.todoIndex !== todoIndex)
+      this.setState({ todos })
+  }
+
+  toggleComplete (todoIndex) {
+      let todos = this.state.todos
+      todos.forEach((todo) => {
+          if (todo.todoIndex === todoIndex) {
+              todo.complete = !todo.complete
+          }
+      })
+      this.setState({ todos })
+  }
+
+  setType (type) {
+      this.setState({ type })
+  }
+  
+  
+  render() {
+
+      const { inputValue, todos, type } = this.state
+      
+      return (
+          <View style={styles.container}>
+              <ScrollView
+                  keyboardShouldPersistTaps='always'
+                  style={styles.content}>
+                  <Heading />
+                  <Input inputValue={inputValue} inputChange={(text) => this.
+              inputChange(text)} />
+                  <TodoList 
+                   type={type}
+                   toggleComplete={this.toggleComplete}
+                   deleteTodo={this.deleteTodo}
+                   todos={todos}          
+                  />
+                  <Button submitTodo={this.submitTodo} />
+                  
+              </ScrollView>
+              <TabBar type={type} setType={this.setType} />
+          </View>
+      )
+  }
 }
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+container: {
+  flex: 1,
+  backgroundColor: '#f5f5f5'
+},
+content: {
+  flex: 1,
+  paddingTop: 60
+}
+})
 
-
-export default MyComponent
+export default App
