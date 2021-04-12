@@ -1,98 +1,69 @@
 import * as React from 'react';
-import { View, Text, Button } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Button, View } from 'react-native';
+import { createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem, } from '@react-navigation/drawer'; // DrawerContentScrollView,DrawerItemList,DrawerItem 3개를 추가해줍니다.
+import { NavigationContainer,DrawerActions } from '@react-navigation/native'; //DrawerActions 추가
 
 function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 30 }}>This is the home screen!</Text>
       <Button
-        onPress={() => navigation.navigate('MyModal')}
-        title="Open Modal"
+        onPress={() => navigation.navigate('Notifications')}
+        title="Go to notifications"
       />
       <Button
-        onPress={() => navigation.navigate('Details')}
-        title="Open Details"
+        onPress={() =>  navigation.openDrawer()}
+        title="Go to openDrawer"
       />
       <Button
-        onPress={() => navigation.navigate('SubTap')}
-        title="Open SubTap"
+        onPress={() =>  navigation.toggleDrawer()}
+        title="Go to toggleDrawer"
       />
+      <Button
+        onPress={() =>  navigation.closeDrawer()}
+        title="Go to closeDrawer"
+      />
+     
+
     </View>
   );
 }
 
-function ModalScreen({ navigation }) {
+function NotificationsScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 30 }}>This is a modal!</Text>
-      <Button onPress={() => navigation.goBack()} title="Dismiss" />
-      <Button
-        onPress={() => navigation.navigate('Details')}
-        title="Open Details"
-      />
-       <Button
-        title="Go to ModalScreen... again"
-        onPress={() =>
-          navigation.push('MyModal', { 
-            itemId: Math.floor(Math.random() * 100),
-          })
-        }
-      />
+      <Button onPress={() => navigation.goBack()} title="Go back home" />
     </View>
   );
 }
-
-function DetailsScreen({navigation}) {
+function CustomDrawerContent(props) { //커스텀 드로어 함수를 만듭니다,
   return (
-    <View>
-      <Button
-        onPress={() => navigation.navigate('MyModal')}
-        title="Open Modal"
+    <DrawerContentScrollView {...props}> 
+      <DrawerItemList {...props}  //페이지들
+      /> 
+      <DrawerItem
+        label="Close drawer"
+        onPress={() => props.navigation.dispatch(DrawerActions.closeDrawer())} //dipatch로 DrawerActions을 추가해줍니다.
       />
-      <Text>Details</Text>
-      <Button
-        onPress={() => navigation.navigate('Home')}
-        title="Open Home"
+      <DrawerItem
+        label="Toggle drawer"
+        onPress={() => props.navigation.dispatch(DrawerActions.toggleDrawer())}
       />
-    </View>
-    
+    </DrawerContentScrollView>
   );
 }
+const Drawer = createDrawerNavigator();
 
-const MainStack = createStackNavigator();
-const RootStack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-
-function MainStackScreen() {
-  return (
-    <MainStack.Navigator>
-      <MainStack.Screen name="Home" component={HomeScreen} />
-      <MainStack.Screen name="Details" component={DetailsScreen} />
-    </MainStack.Navigator>
-  );
-}
-
-function SubTapScreen(){
-  return(
-  <Tab.Navigator>
-    <Tab.Screen name="Home2" component={HomeScreen} />
-    <Tab.Screen name="DetailsScreen2" component={DetailsScreen} />
-  </Tab.Navigator>
-  )
-}
-function App() {
+export default function App() {
   return (
     <NavigationContainer>
-      <RootStack.Navigator mode="modal" headerMode="none">
-        <RootStack.Screen name="Main" component={MainStackScreen} />
-        <RootStack.Screen name="MyModal" component={ModalScreen} />
-        <RootStack.Screen name="SubTap" component={SubTapScreen}/>
-      </RootStack.Navigator>
+      <Drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />} //drawerContent에 커스텀 드로어를 추가해줍니다.
+      >
+        <Drawer.Screen name="Home" component={HomeScreen} />
+        <Drawer.Screen name="Notifications" component={NotificationsScreen} />
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }
-
-export default App;
