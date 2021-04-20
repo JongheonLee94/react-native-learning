@@ -1,4 +1,4 @@
-import React, {useState  } from 'react';
+import React, {useState,useContext ,useEffect } from 'react';
 import { View, Text, Button,Hooks, TextInput,StyleSheet, TouchableHighlight  } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -8,31 +8,49 @@ import {DataContext} from '../component/DataContext'
 
 import {TouchButton} from '../component/TouchButton'
 
-function login(id,pw){
-    //추후 서버와 통신
-    let isLogined = false;
-    if(id ===""&& pw ===""){
-      isLogined= true;
-    }
-    return isLogined
-  }
   
   
   export function ModalScreen({ navigation }) {
-    const [email, setEmail] = useState("");
+    const [id, setId] = useState("");
     const [password, setPassword] = useState("");
+    const {isLogined,setIsLogined,username,setUsername} = useContext(DataContext)
+    // const {} = useContext(DataContext)
+    const login = (id,pw) => {
+      fetch('http://cufelee.iptime.org:1490/user/login/', {
+        method: 'POST',
+        body: JSON.stringify({"id":id,"password":pw}),
+        headers: {
+          //Header Defination
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          setIsLogined(json.isLogined)
+          setUsername(json.id)
+          console.log(json)
+          console.log(username)
+        })
+        .catch((error) => {
+          //Hide Loader
+          // setLoading(false);
+          console.error(error);
+        });
+        
   
+    }
+
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ fontSize: 30 }}>로그인페이지</Text>
         <View style={styles.inputContainer}>
           <TextInput                             
-                value = {email}                
+                value = {id}                
                 style= {styles.input}               
-                placeholder='email'
+                placeholder='id'
                 placeholderTextColor ='#CACACA'     
                 selectionColor='#666666'           
-                onChangeText={setEmail}         
+                onChangeText={setId}         
                 />    
           <TextInput                            
                 value = {password}                
@@ -40,7 +58,8 @@ function login(id,pw){
                 placeholder='password'
                 placeholderTextColor ='#CACACA'    
                 selectionColor='#666666'          
-                onChangeText={setPassword}        
+                onChangeText={setPassword}   
+                secureTextEntry={true}      
                 />   
   
           
@@ -61,7 +80,7 @@ function login(id,pw){
               if(isLogined){navigation.navigate('Main');console.log(isLogined)}
               
               return (<Button
-                onPress={() => {setIsLogined(login(email,password));console.log(email+","+password+","+isLogined);}}
+                onPress={() => {login(id,password)}}
                 title="로그인"
               />)}
               

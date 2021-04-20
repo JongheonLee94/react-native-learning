@@ -57,10 +57,13 @@ function RootStackScreen() {
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
+  const [username, setUsername] = useState("");
   return (
     <DataContext.Provider value={{
       "isLogined":isLogined,
       "setIsLogined":setIsLogined,
+      "username":username,
+      "setUsername":setUsername,
     }}>
     <NavigationContainer>
       <RootStackScreen/>
